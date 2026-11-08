@@ -26,10 +26,11 @@ const toTutorial = (row) => row && {
 const toStep = (row) => ({ id: row.id, stepOrder: row.step_order, description: row.description, imageUrl: row.image_url });
 
 /** Daftar tutorial dengan filter opsional: bahan, kata kunci, durasi maksimum. */
-const findAll = async ({ material, q, maxDuration } = {}) => {
+const findAll = async ({ material, difficulty, q, maxDuration } = {}) => {
   const where = [];
   const params = [];
   if (material) { where.push('t.material = ?'); params.push(material); }
+  if (difficulty) { where.push('t.difficulty = ?'); params.push(difficulty); }
   if (maxDuration) { where.push('t.duration_minutes <= ?'); params.push(maxDuration); }
   if (q) {
     where.push('(t.title LIKE ? OR t.description LIKE ? OR u.name LIKE ?)');

@@ -34,11 +34,12 @@ const readTutorialBody = (req) => {
 
 // GET /api/tutorials?material=&q=&maxDuration=
 const list = async (req, res) => {
-  const { material, q } = req.query;
+  const { material, q, difficulty } = req.query;
   if (material && !MATERIAL_KEYS.includes(material)) throw new HttpError(400, `Bahan tidak dikenal. Pilihan: ${MATERIAL_KEYS.join(', ')}.`);
+  if (difficulty && !DIFFICULTIES.includes(difficulty)) throw new HttpError(400, `Tingkat kesulitan tidak dikenal. Pilihan: ${DIFFICULTIES.join(', ')}.`);
   const maxDuration = req.query.maxDuration ? Number(req.query.maxDuration) : undefined;
   if (maxDuration !== undefined && !(maxDuration > 0)) throw new HttpError(400, 'maxDuration harus angka lebih dari 0.');
-  const items = await tutorialModel.findAll({ material, q: q && String(q).trim(), maxDuration });
+  const items = await tutorialModel.findAll({ material, difficulty, q: q && String(q).trim(), maxDuration });
   send(res, 200, 'Data tutorial berhasil diambil', items.map((t) => presentTutorial(req, t)));
 };
 
