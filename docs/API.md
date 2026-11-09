@@ -29,7 +29,7 @@ API terpusat (Node.js + Express + SQLite) yang dipakai bersama oleh **Web (React
 | 7 | `GET` | `/api/me` | Wajib login | Header Authorization | `200` User + `stats` |
 | 8 | `GET` | `/api/me/actions` | Wajib login | Header Authorization | `200` Action[] |
 | 9 | `GET` | `/api/me/redemptions` | Wajib login | Header Authorization | `200` Redemption[] |
-| 10 | `GET` | `/api/tutorials` | Publik | Query opsional: `material`, `q`, `maxDuration` | `200` Tutorial[] |
+| 10 | `GET` | `/api/tutorials` | Publik | Query opsional: `material`, `difficulty`, `q`, `maxDuration` | `200` Tutorial[] |
 | 11 | `GET` | `/api/tutorials/:id` | Publik | Parameter `:id` | `200` Tutorial + `steps[]` |
 | 12 | `POST` | `/api/tutorials` | Admin | Body JSON: `title`, `material`, `difficulty` (Sangat mudah, Mudah, Sedang, Sulit), `durationMinutes`, `steps[]`; opsional `description`, `co2SavedKg`, `xpReward`, `imageUrl` | `201` Tutorial + `steps[]` |
 | 13 | `PUT` | `/api/tutorials/:id` | Admin | Body JSON sama dengan POST | `200` Tutorial + `steps[]` |
@@ -43,7 +43,7 @@ API terpusat (Node.js + Express + SQLite) yang dipakai bersama oleh **Web (React
 | 21 | `DELETE` | `/api/actions/:id/kudos` | Wajib login | Tanpa body | `200` Action |
 | 22 | `PATCH` | `/api/actions/:id/status` | Admin | Body JSON: `status` = `pending` / `verified` / `rejected` | `200` Action |
 | 23 | `DELETE` | `/api/actions/:id` | Wajib login (pemilik saat pending) / Admin | Parameter `:id` | `200` `{ id }` |
-| 24 | `GET` | `/api/drop-points` | Publik | Query opsional: `material` | `200` DropPoint[] |
+| 24 | `GET` | `/api/drop-points` | Publik | Query opsional: `material`, `type` | `200` DropPoint[] |
 | 25 | `GET` | `/api/drop-points/:id` | Publik | Parameter `:id` | `200` DropPoint |
 | 26 | `POST` | `/api/drop-points` | Admin | Body JSON: `name`, `type`, `latitude`, `longitude`, `materials[]`; opsional `address`, `openingHours` | `201` DropPoint |
 | 27 | `PUT` | `/api/drop-points/:id` | Admin | Body JSON sama dengan POST | `200` DropPoint |
@@ -376,10 +376,10 @@ Riwayat penukaran reward beserta kode voucher.
 
 #### `GET /api/tutorials?material=kaca`
 
-Daftar tutorial. Query opsional: `material` (plastik, kardus, tekstil, kaca, logam, organik), `q` (kata kunci), `maxDuration` (menit).
+Daftar tutorial. Query opsional: `material` (plastik, kardus, tekstil, kaca, logam, organik), `difficulty` (Sangat mudah, Mudah, Sedang, Sulit), `q` (kata kunci), `maxDuration` (menit). Nilai `difficulty` yang tidak dikenal menghasilkan `400`.
 
 - **Akses:** Publik
-- **Request:** Query opsional: `material`, `q`, `maxDuration`
+- **Request:** Query opsional: `material`, `difficulty`, `q`, `maxDuration`
 
 **Response `200`**
 
@@ -949,10 +949,10 @@ Menghapus aksi. Pemilik hanya dapat menghapus aksi yang masih `pending`; admin d
 
 #### `GET /api/drop-points?material=tekstil`
 
-Daftar titik setor. Query opsional `material`. `mapsUrl` membuka rute di Google Maps.
+Daftar titik setor. Query opsional `material` dan `type` (jenis mitra, misalnya `Bank sampah`). Untuk jenis yang tidak ada, hasilnya array kosong. `mapsUrl` membuka rute di Google Maps.
 
 - **Akses:** Publik
-- **Request:** Query opsional: `material`
+- **Request:** Query opsional: `material`, `type`
 
 **Response `200`**
 
