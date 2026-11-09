@@ -23,9 +23,9 @@ const readBody = (b) => {
 
 // GET /api/drop-points?material=
 const list = async (req, res) => {
-  const { material } = req.query;
+  const { material, type } = req.query;
   if (material && !MATERIAL_KEYS.includes(material)) throw new HttpError(400, `Bahan tidak dikenal. Pilihan: ${MATERIAL_KEYS.join(', ')}.`);
-  send(res, 200, 'Data titik setor berhasil diambil', await dropPointModel.findAll({ material }));
+  send(res, 200, 'Data titik setor berhasil diambil', await dropPointModel.findAll({ material, type: type && String(type).trim() }));
 };
 
 // GET /api/drop-points/:id

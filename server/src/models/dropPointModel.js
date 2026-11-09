@@ -13,11 +13,11 @@ const toDropPoint = (row) => row && {
   mapsUrl: `https://www.google.com/maps/dir/?api=1&destination=${row.latitude},${row.longitude}`,
 };
 
-const findAll = async ({ material } = {}) => {
+const findAll = async ({ material, type } = {}) => {
   const rows = material
     ? await all("SELECT * FROM drop_points WHERE (',' || materials || ',') LIKE ? ORDER BY id", [`%,${material},%`])
     : await all('SELECT * FROM drop_points ORDER BY id');
-  return rows.map(toDropPoint);
+  return rows.map(toDropPoint).filter((d) => !type || d.type === type);
 };
 
 const findById = async (id) => toDropPoint(await get('SELECT * FROM drop_points WHERE id = ?', [id]));
